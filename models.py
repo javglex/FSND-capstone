@@ -22,15 +22,16 @@ def setup_db(app, database_path=database_path):
 
 
 '''
-Person
-Have title and release year
+User
+Represents as User of the website. Able to create listings.
 '''
-class Person(db.Model):  
-  __tablename__ = 'People'
+class User(db.Model):  
+  __tablename__ = 'User'
 
   id = Column(db.Integer, primary_key=True)
-  name = Column(String)
-  catchphrase = Column(String)
+  username = Column(String(80))
+  email = Column(String(500))
+  listings = db.relationship('Listing', backref='user')
 
   def __init__(self, name, catchphrase=""):
     self.name = name
@@ -39,5 +40,41 @@ class Person(db.Model):
   def format(self):
     return {
       'id': self.id,
-      'name': self.name,
-      'catchphrase': self.catchphrase}
+      'username': self.username,
+      'email': self.email
+      }
+
+
+'''
+Listing
+Represents a listing which will contain title, subtitle, description, image, text body and publish dates
+'''
+class Listing(db.Model):
+  __tablename__ = 'Listing'
+
+  id = db.Column(db.Integer, primary_key=True)
+  title = db.Column(db.String(180))
+  subtitle = db.Column(db.String(180))
+  description = db.Column(db.String(500))
+  image = db.Column(db.String)
+  body = db.Column(db.String)
+  publish_dates = db.Column(db.ARRAY(db.String(120)))
+
+  def __init__(self, title="", subtitle="", description="", image="", body="", publish_dates=[]):
+    self.title = title
+    self.subtitle = subtitle
+    self.description = description
+    self.image = image
+    self.body = body
+    self.publish_dates = publish_dates
+
+  def format(self):
+    return {
+      'id': self.id,
+      'title': self.title,
+      'subtitle': self.subtitle,
+      'description': self.description,
+      'image': self.image,
+      'body': self.body,
+      'publish_dates': self.publish_dates
+      }
