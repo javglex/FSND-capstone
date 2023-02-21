@@ -26,16 +26,21 @@ User
 Represents as User of the website. Able to create listings.
 '''
 class User(db.Model):  
-  __tablename__ = 'User'
+  __tablename__ = 'users'
 
   id = Column(db.Integer, primary_key=True)
   username = Column(String(80))
   email = Column(String(500))
   listings = db.relationship('Listing', backref='user')
 
-  def __init__(self, name, catchphrase=""):
-    self.name = name
-    self.catchphrase = catchphrase
+  def __init__(self, id, username, email):
+    self.id = id
+    self.username = username
+    self.email = email
+
+  def insert(self):
+    db.session.add(self)
+    db.session.commit()
 
   def format(self):
     return {
@@ -50,9 +55,10 @@ Listing
 Represents a listing which will contain title, subtitle, description, image, text body and publish dates
 '''
 class Listing(db.Model):
-  __tablename__ = 'Listing'
+  __tablename__ = 'listings'
 
   id = db.Column(db.Integer, primary_key=True)
+  user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
   title = db.Column(db.String(180))
   subtitle = db.Column(db.String(180))
   description = db.Column(db.String(500))
@@ -60,13 +66,21 @@ class Listing(db.Model):
   body = db.Column(db.String)
   publish_dates = db.Column(db.ARRAY(db.String(120)))
 
-  def __init__(self, title="", subtitle="", description="", image="", body="", publish_dates=[]):
+  def __init__(self, userId: int = None, title: str = "", subtitle: str = "", description : str = "", image: str = "", body: str = "", publish_dates=[]):
     self.title = title
     self.subtitle = subtitle
     self.description = description
     self.image = image
     self.body = body
     self.publish_dates = publish_dates
+    self.user_id = userId
+
+    if userId < 0 or userId == None:
+      raise Exception("User ID is invalid")
+
+  def insert(self):
+          db.session.add(self)
+          db.session.commit()
 
   def format(self):
     return {
