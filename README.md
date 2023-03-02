@@ -1,9 +1,13 @@
 ## API Reference
 
+This project is a backend API for viewing and managing listings such as in ecommerce. A listing represents an item that will be put up for sale. The reason why I wanted to create this API is because I want to expand it and use it for a real world project.
+
 ### Getting Started
 - Base URL: This app can run either locally or from Heroku. Backend app is set to be hosted locally in `http://127.0.0.1:5000/`, and on Heroku in `https://fsnd-capstone-javi.herokuapp.com/`
 - Authentication: Auth0.
 - NOTE: we only have one existing user in DB (user_id = 1). Use this ID when creating new listings. In future projects, we will automatically create user IDs with Auth0 hooks.
+
+
 ## To run application:
 
 ### You should have setup.sh and requirements.txt available
@@ -18,6 +22,11 @@ python3 app.py
 dropdb postgres_test 
 createdb postgres_test
 python3 test_api.py
+
+### Getting User Token
+Login/Signup using`https://dev-3y22uvpavowk2d67.us.auth0.com/authorize?audience=showmesandiego.listings&response_type=token&client_id=IKzxbUqeXYz7WYKSfxOPAbom3sZ37LbN&redirect_uri=http://localhost:5000/login-results`
+
+For account with Venue permissions (update,delete,patch listings) use `merchanttest@yopmail.com` with pass `abc@1234`
 
 ### Error Handling
 Errors are JSON responses formatted in the following:
@@ -39,6 +48,7 @@ The following are error codes that can potentially be returned by the API:
     - Returns a list of available listings (advertisements)
     - No authentication or permissions required
 - Sample: `curl --request GET http://127.0.0.1:5000/listings`
+- Heroku Sample: `curl --request GET https://fsnd-capstone-javi.herokuapp.com/listings`
 
 ``` 
 {
@@ -63,8 +73,8 @@ The following are error codes that can potentially be returned by the API:
     - If authenticated, creates a new listing under User.
     - Returns success state, and new listing created
     - User token with authentication and venue permissions required
-- Sample: `curl http://127.0.0.1:5000/listings -X POST -H "Content-Type: application/json" -d "Authorization: Bearer ${TOKEN}" '{"title": "Sample title", "subtitle": "Sample subtitle", "description":"Sample description", "user_id": 1}'`
-
+- Local Sample: `curl http://127.0.0.1:5000/listings -X POST -H "Content-Type: application/json" -d '{"title":"titleTest", "description":"description test", "subtitle":"subtitle test", "user_id":"1"}' -H "Authorization: Bearer ${TOKEN}"`
+- Heroku Sample: `curl https://fsnd-capstone-javi.herokuapp.com/listings -X POST -H "Content-Type: application/json" -d '{"title":"titleTest", "description":"description test", "subtitle":"subtitle test", "user_id":"1"}' -H "Authorization: Bearer ${TOKEN}"`
 ``` {
     "listing":
     { 
@@ -85,7 +95,8 @@ The following are error codes that can potentially be returned by the API:
 - General:
     - Deletes a listing with the given ID. Returns the id of the deleted listing, and success value.
     - User token with authentication and venue permissions required
-- Sample: `curl -X DELETE http://127.0.0.1:5000/listings/16 -H "Content-Type: application/json" -d "Authorization: Bearer ${TOKEN}"`
+- Sample: `curl -X DELETE http://127.0.0.1:5000/listings/1 -H "Content-Type: application/json" "Authorization: Bearer ${TOKEN}"`
+- Heroku Sample: `curl -X DELETE https://fsnd-capstone-javi.herokuapp.com/listings/1 -H "Content-Type: application/json" "Authorization: Bearer ${TOKEN}"`
 ```
 {
   "deleted_id": 16,
@@ -98,7 +109,8 @@ The following are error codes that can potentially be returned by the API:
 - General:
     - Updates the listing's by the given ID, with a title. Returns the id of the updated listing, and success value.
     - User token with authentication and venue permissions required
-- Sample: `curl -X PATCH http://127.0.0.1:5000/listings/16 -H "Content-Type: application/json" -d "Authorization: Bearer ${TOKEN}" '{"title": "new title"}'`
+- Local Sample: `curl -X PATCH http://127.0.0.1:5000/listings/1 -H "Content-Type: application/json" -H "Authorization: Bearer ${TOKEN}" -d '{"title": "new title"}'`
+- Heroku Sample: `curl -X PATCH https://fsnd-capstone-javi.herokuapp.com/listings/1 -H "Content-Type: application/json" -H "Authorization: Bearer ${TOKEN}" -d '{"title": "new title"}'`
 ```
 {
     "listing":
@@ -109,7 +121,7 @@ The following are error codes that can potentially be returned by the API:
         "image": "image.url",
         "publish_dates": [],
         "subtitle": "subtitle sample",
-        "title": "title sample"
+        "title": "new title"
     },
     "success": true
 }
