@@ -68,29 +68,6 @@ The following are error codes that can potentially be returned by the API:
 }
 ```
 
-#### POST /listings
-- General:
-    - If authenticated, creates a new listing under User.
-    - Returns success state, and new listing created
-    - User token with authentication and venue permissions required
-- Local Sample: `curl http://127.0.0.1:5000/listings -X POST -H "Content-Type: application/json" -d '{"title":"titleTest", "description":"description test", "subtitle":"subtitle test", "user_id":"1"}' -H "Authorization: Bearer ${TOKEN}"`
-- Heroku Sample: `curl https://fsnd-capstone-javi.herokuapp.com/listings -X POST -H "Content-Type: application/json" -d '{"title":"titleTest", "description":"description test", "subtitle":"subtitle test", "user_id":"1"}' -H "Authorization: Bearer ${TOKEN}"`
-``` {
-    "listing":
-    { 
-        "body": "sample body",
-        "description": "description sample",
-        "id": 3,
-        "image": "image.url",
-        "publish_dates": [],
-        "subtitle": "subtitle sample",
-        "title": "title sample"
-    },
-    "success": true
-  }
-```
-
-
 #### DELETE /listings/{listing_id}
 - General:
     - Deletes a listing with the given ID. Returns the id of the deleted listing, and success value.
@@ -125,4 +102,22 @@ The following are error codes that can potentially be returned by the API:
     },
     "success": true
 }
+```
+
+#### POST /user
+- General:
+    - Used internally. Will be used for a hook with Auth0 authentication in the future
+    - Returns success state, and new user created
+    - Can be used for testing purposes
+- Local Sample: `curl http://127.0.0.1:5000/listings -X POST -H "Content-Type: application/json" -d '{"username":"testName", "email":"test@email.com", "user_id":1}'`
+- Heroku Sample: `curl https://fsnd-capstone-javi.herokuapp.com/user -X POST -H "Content-Type: application/json" -d '{"username":"testName", "email":"test@email.com", "user_id":1}'`
+``` {
+    "user":
+    {
+      'id': 1,
+      'username': 'test name',
+      'email': 'self.email'
+      },
+    "success": true
+  }
 ```
