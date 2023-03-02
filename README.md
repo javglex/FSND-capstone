@@ -28,6 +28,8 @@ Login/Signup using`https://dev-3y22uvpavowk2d67.us.auth0.com/authorize?audience=
 
 For account with Venue permissions (update,delete,patch listings) use `merchanttest@yopmail.com` with pass `abc@1234`
 
+Once TOKEN is returned, you can save it to CLI using export=TOKEN command. Thereafter, you can use the curl commands below.
+
 ### Error Handling
 Errors are JSON responses formatted in the following:
 ```
