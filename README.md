@@ -3,7 +3,7 @@
 ## API Reference
 
 ### Getting Started
-- Base URL: Currently this app is only configured to run locally. Backend app is hosted in `http://127.0.0.1:5000/`, set as a proxy in the frontend config. 
+- Base URL: Currently this app is only configured to run locally. Backend app is hosted in `http://127.0.0.1:5000/`
 - Authentication: Auth0.
 
 ## To run application:
@@ -15,6 +15,11 @@ source setup.sh
 pip install -r requirements.txt
 #### Run the app
 python3 app.py
+
+### Run tests
+dropdb postgres_test 
+createdb postgres_test
+python3 test_api.py
 
 ### Error Handling
 Errors are JSON responses formatted in the following:
@@ -31,9 +36,10 @@ The following are error codes that can potentially be returned by the API:
 - 422: Not Processable 
 
 ### Endpoints 
-#### GET /categories
+#### GET /listings
 - General:
     - Returns a list of available listings (advertisements)
+    - No authentication or permissions required
 - Sample: `curl --request GET http://127.0.0.1:5000/listings`
 
 ``` 
@@ -58,92 +64,55 @@ The following are error codes that can potentially be returned by the API:
 - General:
     - If authenticated, creates a new listing under User.
     - Returns success state, and new listing created
-- Sample: `curl http://127.0.0.1:5000/listings -X POST -H "Content-Type: application/json" -d "Authorization: Bearer ${TOKEN}" '{"title": "Sample title", "subtitle": "Sample subtitle", "description":"Sample description"}'`
+    - User token with authentication and venue permissions required
+- Sample: `curl http://127.0.0.1:5000/listings -X POST -H "Content-Type: application/json" -d "Authorization: Bearer ${TOKEN}" '{"title": "Sample title", "subtitle": "Sample subtitle", "description":"Sample description", "user_id": 1}'`
 
 ``` {
-  "questions": [
-    {
-      "answer": "Maya Angelou",
-      "id": 5,
-      "difficulty": 2,
-      "category": 4,
-      "question": "Whose autobiography is entitled 'I Know Why the Caged Bird Sings'?"
+    "listing":
+    { 
+        "body": "sample body",
+        "description": "description sample",
+        "id": 3,
+        "image": "image.url",
+        "publish_dates": [],
+        "subtitle": "subtitle sample",
+        "title": "title sample"
     },
-    {
-      "answer": "Muhammad Ali",
-      "id": 9,
-      "difficulty": 1,
-      "category": 4,
-      "question": "What boxer's original name is Cassius Clay?"
-    }
-  ],
-  "success": true,
-  "total_questions": 2
+    "success": true
   }
 ```
 
-#### POST /questions
-- General:
-    - Creates a new question, which requires the question text, answer text, difficulty score, and category. Returns the id of the question created, and it's success state. If invalid arguments are provided it will return an error response with code 400.
-- Sample: `curl http://127.0.0.1:5000/questions -X POST -H "Content-Type: application/json" -d '{"question":"Who was the first man on the moon?", "answer":"Neil Strongarm", "difficulty":"1", "category":"4"}'`
-```
-{
-  "created": 26,
-  "success": true
-}
-```
 
-#### DELETE /questions/{question_id}
+#### DELETE /listings/{listing_id}
 - General:
-    - Deletes a question with the given ID. Returns the id of the deleted question, success value, and total questions.
-- Sample: `curl -X DELETE http://127.0.0.1:5000/questions/16`
+    - Deletes a listing with the given ID. Returns the id of the deleted listing, and success value.
+    - User token with authentication and venue permissions required
+- Sample: `curl -X DELETE http://127.0.0.1:5000/listings/16 -H "Content-Type: application/json" -d "Authorization: Bearer ${TOKEN}"`
 ```
 {
-  "deleted": 16,
+  "deleted_id": 16,
   "success": true,
-  "total_questions": 15
 }
 ```
-#### POST /questions/search
-- General:
-    - Provides a list of questions based on a search term provided.
-- Sample: `curl http://127.0.0.1:5000/questions/search -X POST -H "Content-Type: application/json" -d "search":"sample"`
-```
-"questions": [
-    {
-      "id": 10,
-      "question": "Which is the only team to play in every soccer World Cup tournament?"
-    },
-    {
-      "id": 11,
-      "question": "Which country won the first ever soccer World Cup in 1930?"
-    }
-  ],
-  "success": true
-```
 
-#### GET /categories/<int:category_id>/questions
+
+#### PATCH /listings/{listing_id}
 - General:
-    - Retrieves a list of questions based on a category provided.
-- Sample: `curl "http://127.0.0.1:5000/categories/4/questions"`
+    - Updates the listing's by the given ID, with a title. Returns the id of the updated listing, and success value.
+    - User token with authentication and venue permissions required
+- Sample: `curl -X PATCH http://127.0.0.1:5000/listings/16 -H "Content-Type: application/json" -d "Authorization: Bearer ${TOKEN}" '{"title": "new title"}'`
 ```
 {
-  "count": 2,
-  "questions": [
-    {
-      "answer": "Maya Angelou",
-      "category": 4,
-      "difficulty": 2,
-      "id": 5,
-      "question": "Whose autobiography is entitled 'I Know Why the Caged Bird Sings'?"
+    "listing":
+    { 
+        "body": "sample body",
+        "description": "description sample",
+        "id": 3,
+        "image": "image.url",
+        "publish_dates": [],
+        "subtitle": "subtitle sample",
+        "title": "title sample"
     },
-    {
-      "answer": "Muhammad Ali",
-      "category": 4,
-      "difficulty": 1,
-      "id": 9,
-      "question": "What boxer's original name is Cassius Clay?"
-    }
-  ]
+    "success": true
 }
 ```

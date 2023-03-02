@@ -130,16 +130,18 @@ def create_app(test_config=None):
 
         listing = Listing.query.filter(Listing.id == listing_id).one_or_none()
 
+        if title == "" or title is None:
+            abort(422)
+
         if (listing is None):
             abort(404)
         
         listing.title = title
 
         try:
-            if (listing.user_id == userId): # ensure we are only updating our own listing
-                listing.update()
-            else :
-                abort(422)        
+            # if (listing.user_id == userId): # in future ensure we are only updating our own listing
+            listing.update()
+
         except Exception:
             traceback.print_exc()
             abort(500)
@@ -147,7 +149,7 @@ def create_app(test_config=None):
         return jsonify(
             {
                 "success": True,
-                "drinks": [listing.format()]
+                "listing": [listing.format()]
             }
         ), 200
 
