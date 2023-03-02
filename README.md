@@ -1,9 +1,7 @@
-
-
 ## API Reference
 
 ### Getting Started
-- Base URL: Currently this app is only configured to run locally. Backend app is hosted in `http://127.0.0.1:5000/`
+- Base URL: This app can run either locally or from Heroku. Backend app is set to be hosted locally in `http://127.0.0.1:5000/`, and on Heroku in `https://fsnd-capstone-javi.herokuapp.com/`
 - Authentication: Auth0.
 
 ## To run application:
