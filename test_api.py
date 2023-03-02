@@ -109,6 +109,8 @@ class ApiTestCase(unittest.TestCase):
         self.assertEqual(res.status_code, 404)
         self.assertEqual(data["success"], False)
 
+    """Patch Listings Tests"""
+
     def test_update_listing_title(self):
         res = self.client().patch("/listings/1", headers=headers, json={"title": "updated title"})
         data = json.loads(res.data)
